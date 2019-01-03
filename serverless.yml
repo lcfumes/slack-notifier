@@ -1,0 +1,46 @@
+service: releases-notifier
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${opt:stage, self:custom.defaultStage}
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+        - lambda:InvokeAsync
+      Resource: "*"
+  environment:
+    ENV_NAME: ${opt:stage, self:provider.stage}
+    region: ${self:provider.region}
+custom:
+  defaultStage: development
+  developmentDeletionPolicy: Delete
+  productionDeletionPolicy: Retain
+  lambdaProccess: ${self:service}-lambda-${self:provider.environment.ENV_NAME}
+  API_SLACK:
+    development: ${ssm:/Dev/Releases-Notifier/API_SLACK_PATH}
+    production: ${ssm:/Prod/Releases-Notifier/API_SLACK_PATH}
+
+functions:
+  notifier:
+    handler: functions/notifier.handler
+    memorySize: 128
+    timeout: 30
+    environment:
+      API_SLACK_HOST: hooks.slack.com
+      API_SLACK_PATH: ${self:custom.API_SLACK.${self:provider.environment.ENV_NAME}}
+    events:
+      - http:
+          path: github/
+          method: post
+          integration: lambda
+          cors: true
+          statusCodes:
+            200:
+              pattern: ''
+
