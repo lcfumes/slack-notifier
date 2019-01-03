@@ -12,7 +12,7 @@ module.exports.handler = async (event, context, callback) => {
   console.log(event)
 
   if (!body.ref.includes(ACTIVE_BRANCHES)) {
-    callback('[400] Not permitted branch')
+    return callback(`[400] Not permitted branch: ${body.ref}`)
   }
 
   const message = `GOOD NEWS!!! A new version of \`${body.repository.name}\` has just gone into production`
