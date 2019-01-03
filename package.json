@@ -1,0 +1,22 @@
+{
+  "name": "slack-notifier",
+  "version": "1.0.0",
+  "description": "Slack Notifier sends webhooks messages from GitHub",
+  "scripts": {
+    "test": "test",
+    "test:master-merge": "serverless invoke local --function notifier --path mocks/master-merge.mock.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lcfumes/releases-notifier.git"
+  },
+  "author": "Luiz Fumes <lcfumes@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lcfumes/releases-notifier/issues"
+  },
+  "homepage": "https://github.com/lcfumes/releases-notifier#readme",
+  "devDependencies": {
+    "serverless-offline": "^3.31.3"
+  }
+}
